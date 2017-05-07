@@ -11,10 +11,7 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 -- Widget library
-local drop = require("scratchdrop")
-local simpletab = require("simpletab")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
-local wwidgets = require("wwidgets")
 local vicious = require("vicious")
 
 -- {{{ Error handling
@@ -45,7 +42,7 @@ end
 -- {{{ Initialization and default applications
 homedir = os.getenv("HOME")
 confdir = homedir .. "/.config/awesome"
-themefile = confdir .. "/themes/arc/theme.lua"
+themefile = confdir .. "/themes/nord/theme.lua"
 hostname = io.popen("hostname"):read()
 
 terminal = os.getenv("TERMCMD") or "urxvt"
@@ -53,9 +50,8 @@ editor = terminal .. " -e nvim"
 htop = terminal .. " -e htop"
 browser = "firefox"
 calendar = "gnome-calendar"
-mail = {}
-mail.cmd = "evolution"
-mail.class = "Evolution"
+mail = "evolution"
+volume_mixer = terminal .. " -e pulsemixer"
 
 filemanager = terminal .. " -e ranger"
 netstat = terminal .. " -e \"sh -c 'ss -tupr | column -t | less'\""
@@ -71,17 +67,43 @@ beautiful.init(themefile)
 
 -- {{{ Utils
 
-function iconify(value)
-    return "<span font-family='Wuncon Siji'>" .. utf8.char(value) .. "</span>"
+function iconify(value, font_color)
+    font_color = font_color or beautiful.fg_normal
+    return "<span font-family='Wuncon Siji'"
+       .. " color='" .. font_color .. "'>" 
+       .. utf8.char(value) .. "</span>"
+end
+
+function notify(message)
+    naughty.notify({ text = tostring(message) }) 
 end
 
 function log(message)
-    naughty.notify({ text = tostring(message) }) 
+    local file = assert(io.open("/tmp/rc.log", "a"), "Cannot open log file")
+    file:write(message .. "\n")
+    file:close()
+end
+log('--------------------------------------------------')
+
+function table_to_string(table, indent)
+    local indent = indent or 0
+    local s = ""
+    local tabs = string.rep(" ", indent)
+
+    for k,v in pairs(table) do
+        if type(v) == "table" then
+            s = s .. tabs .. tostring(k) .. " = {\n" .. table_to_string(v, indent + 1) .. tabs .. "}\n"
+        else
+            s = s .. tabs .. tostring(k) .. " = " .. tostring(v) .. ",\n"
+        end
+    end
+    return s      
 end
 
 -- }}}
 
 -- {{{ Override naughty defaults
+
 naughty.config.defaults = {
     timeout = 10,
     text = "",
@@ -93,7 +115,7 @@ naughty.config.defaults = {
     border_color = beautiful.naughty_border_color,
     fg = beautiful.naughty_fg_color,
     bg = beautiful.naughty_bg_color,
-    position = "top_right"
+    position = "bottom_right"
 }
 naughty.config.presets = {
     normal = {},
@@ -109,27 +131,8 @@ naughty.config.presets = {
 }
 -- }}}
 
--- {{{ Wallpaper
--- Determine screen orientation
-local function get_screen_orientation(s)
-    if s.geometry.height > s.geometry.width then
-        return "portrait"
-    end
-    return "landscape"
-end
-
-local function set_wallpaper(s)
-    wallpaper = beautiful.wallpaper[get_screen_orientation(s)]
-    if wallpaper then
-        gears.wallpaper.maximized(wallpaper, s, false)
-    end
-end
-
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", set_wallpaper)
--- }}}
-
 -- {{{ Tags
+
 local tag_names = {}
 tag_names[1] = { "1", "2", "3", "4", "5", "6" }
 tag_names[2] = { "Q", "W", "E", "R", "T", "Z" }
@@ -137,27 +140,32 @@ tag_names[2] = { "Q", "W", "E", "R", "T", "Z" }
 local tag_keys = {}
 tag_keys[1] = { "#10", "#11", "#12", "#13", "#14", "#15" }
 tag_keys[2] = { "q", "w", "e", "r", "t", "z" }
+
 -- }}}
 
 -- {{{ Layouts
+
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts = {
     awful.layout.suit.tile,
-    -- awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    -- awful.layout.suit.tile.top,
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
-    awful.layout.suit.max,
+    awful.layout.suit.magnifier,
+    -- awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.spiral,
+    -- awful.layout.suit.floating,
+    -- awful.layout.suit.tile.left,
+    -- awful.layout.suit.max,
     -- awful.layout.suit.max.fullscreen,
-    awful.layout.suit.floating,
-    awful.layout.suit.spiral,
     -- awful.layout.suit.spiral.dwindle,
-    -- awful.layout.suit.magnifier
+    -- awful.layout.suit.tile.top,
+    -- awful.layout.suit.fair,
 }
+
 -- }}}
 
 -- {{{ Menu
+
 -- Create a laucher widget and a main menu
 awesomemenu = {
     { "edit config", terminal .. " -e 'nvim " .. awesome.conffile .. "'" },
@@ -186,48 +194,54 @@ menubar.utils.terminal = terminal
 
 -- {{{ Widgets
 
-promptbox = awful.widget.prompt()
+-- {{{ Widget utils
 
--- No battery widget for desktop computers
-batterywidget = {}
-if awful.util.file_readable("/sys/class/power_supply/BAT0/present") then
-    batterywidget = wwidgets.batterywidget({
-        color_bg = beautiful.widget_bg,
-        color_low = beautiful.color.red
-    })
+function widget_wrap(widget, no_hover, left, right)
+
+    local default_bg = no_hover and beautiful.widget_bg or beautiful.wibox_bg
+
+    local padding = wibox.container.margin()
+    padding:set_left(10)
+    padding:set_right(10)
+    padding:set_widget(widget)
+
+    local background = wibox.container.background()
+    background:set_bg(default_bg)
+    background:set_fg(beautiful.widget_fg)
+    background:set_widget(padding)
+
+    local margin = wibox.container.margin()
+    margin:set_left(left or 5)
+    margin:set_right(right or 5)
+    margin:set_widget(background)
+
+    if not no_hover then
+        margin.widget:connect_signal("mouse::enter", function()
+            background:set_bg(beautiful.widget_bg)
+        end)
+        margin.widget:connect_signal("mouse::leave", function()
+            background:set_bg(beautiful.wibox_bg)
+        end)
+    end
+
+    return margin
 end
 
-function wrapped_widget(widget, left, right)
-    return
-    {
-        {
-            {
-                widget = widget
-            },
-            widget = wibox.container.background(),
-            bg = beautiful.widget_bg
-        },    
-        widget = wibox.container.margin(),
-        left = left or 5,
-        right = right or 5
-    }
-end
-
-function widget_notification(wrapped_widget, command)
-    wrapped_widget.widget:connect_signal("mouse::enter", function()
+function widget_notification(widget, command)
+    widget.widget:connect_signal("mouse::enter", function()
         awful.spawn.easy_async(command, function(stdout, stderr, reason, exit_code)
-            wrapped_widget.notification = naughty.notify({ text = stdout, timeout = 0 })
+            widget.notification = naughty.notify({ text = stdout, timeout = 0 })
         end)
     end)
 
-    wrapped_widget.widget:connect_signal("mouse::leave", function()
-        naughty.destroy(wrapped_widget.notification)
+    widget.widget:connect_signal("mouse::leave", function()
+        naughty.destroy(widget.notification)
     end)
 end
 
-function widget_tooltip(wrapped_widget, command)
+function widget_tooltip(widget, command)
     awful.tooltip({
-        objects = { wrapped_widget.widget },
+        objects = { widget.widget },
         timer_function = function()
             local f = assert(io.popen(command, "r"))
             local s = assert(f:read("*a"))
@@ -237,38 +251,44 @@ function widget_tooltip(wrapped_widget, command)
     })
 end
 
--- Memory
-memoryw = wibox.widget.textbox()
-vicious.register(memoryw, vicious.widgets.mem, 
-    " " .. iconify(0x00e021) .. " $1% ")
+-- }}}
 
-memorywidget = wrapped_widget(memoryw)
-widget_tooltip(memorywidget, "cat test.ics")
+-- Promptbox
+promptbox = awful.widget.prompt()
 
 -- CPU
 cpuw = wibox.widget.textbox()
 vicious.register(cpuw, vicious.widgets.cpu,
-    " " .. iconify(0x00e026) .. " $1% ")
+    iconify(0x00e026, beautiful.color.green) .. " $1%")
 
-cpuwidget = wrapped_widget(cpuw)
+cpuwidget = widget_wrap(cpuw)
+
+-- Memory
+memoryw = wibox.widget.textbox()
+vicious.register(memoryw, vicious.widgets.mem, 
+    iconify(0x00e021, beautiful.color.green) .. " $1%")
+
+memorywidget = widget_wrap(memoryw)
+widget_tooltip(memorywidget, "cat test.ics")
 
 -- Network 
 networkinterface = "enp0s25"
 networkw = wibox.widget.textbox()
 vicious.register(networkw, vicious.widgets.net,
-    " " .. iconify(0x00e061) .. " ${" .. networkinterface .. " down_mb}M "
-    .. iconify(0x00e060).. " ${" .. networkinterface .. " up_mb}M ")
+    iconify(0x00e061, beautiful.color.green) .. " ${" .. networkinterface .. " down_mb}M "
+    .. iconify(0x00e060, beautiful.color.green).. " ${" .. networkinterface .. " up_mb}M")
 
-networkwidget = wrapped_widget(networkw)
+networkwidget = widget_wrap(networkw)
 
 -- Date
 datew = wibox.widget.textbox()
-vicious.register(datew, vicious.widgets.date, " %b %d %Y " 
-    .. iconify(0x00e017) .. " %H:%M ")
+vicious.register(datew, vicious.widgets.date, "%b %d %Y " 
+    .. iconify(0x00e017, beautiful.color.green) .. " %H:%M")
 
-datewidget = wrapped_widget(datew)
-widget_tooltip(datewidget, "echo; date; echo; cal -3 -m | head -n -2")
-datewidget.widget:buttons(awful.util.table.join(
+datewidget = widget_wrap(datew)
+widget_tooltip(datewidget, "echo; date; echo; cal -3 -m | head -n -1")
+--log(table_to_string(datewidget))
+datewidget:buttons(awful.util.table.join(
     awful.button({ }, 1, function(t)
         awful.spawn(calendar)
     end)
@@ -278,20 +298,21 @@ datewidget.widget:buttons(awful.util.table.join(
 volumew = wibox.widget.textbox()
 vicious.register(volumew, vicious.widgets.volume, function (widget, args) 
     local mute = { ["♫"] = 0x00e203, ["♩"] = 0x00e204 }
-    return " " .. iconify(mute[args[2]]) .. " " .. args[1] .. "% "
+    return iconify(mute[args[2]], beautiful.color.green) .. " " .. args[1] .. "%"
 end, 2, "Master")
 
-volumewidget = wrapped_widget(volumew)
-volumewidget.widget:buttons(awful.util.table.join(
+volumewidget = widget_wrap(volumew)
+volumewidget:buttons(awful.util.table.join(
     awful.button({ }, 1, function(t)
-        awful.spawn("amixer set Master toggle")
-        vicious.force({ volumew })
+        awful.spawn(volume_mixer)
     end),
-    awful.button({ }, 2, function(t)
+    awful.button({ }, 3, function(t)
+        notify("hey")
         awful.spawn("amixer set Master toggle")
         vicious.force({ volumew })
     end),
     awful.button({ }, 4, function(t)
+        notify("hey")
         awful.spawn("amixer set Master 5%+")
         vicious.force({ volumew })
     end),
@@ -302,7 +323,7 @@ volumewidget.widget:buttons(awful.util.table.join(
 ))
 -- }}}
 
--- {{{ Screen Initialization
+-- {{{ Tag and task lists
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
@@ -349,22 +370,21 @@ local tasklist_buttons = awful.util.table.join(
     end)
 )
 
+-- }}}
+
+-- {{{ Screen Initialization
 
 awful.screen.connect_for_each_screen(function(s)
-    set_wallpaper(s)
-
-    local layout = layouts[1]
-    if get_screen_orientation(s) == "landscape" then
-        layout = awful.layout.suit.tile
-    else
-        layout = awful.layout.suit.tile.top
-    end
+    
+    wallpaper = gears.wallpaper.maximized(beautiful.wallpaper, s, false)
 
     -- Each screen has its own tag table.
-    for _, tag_name in pairs(tag_names[s.index]) do
+    for i, tag_name in pairs(tag_names[s.index]) do
         awful.tag.add(tag_name, { 
             gap = beautiful.useless_gap,
-            screen = s
+            screen = s,
+            selected = i == 1,
+            layout = layouts[1]
         })
     end
     --awful.tag(tag_names[s.index], s, layout)
@@ -381,40 +401,43 @@ awful.screen.connect_for_each_screen(function(s)
         awful.button({ }, 4, function() awful.layout.inc(layouts, 1) end),
         awful.button({ }, 5, function() awful.layout.inc(layouts, -1) end)
     ))
-    s.mylayoutbox = wwidgets.helpers.add_background(s.mylayoutbox, beautiful.fg_normal, layout_box_color)
+    local layoutboxwidget = widget_wrap(s.mylayoutbox, true)
 
     -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+    local taglistw = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+    local taglistwidget = widget_wrap(taglistw, true)
 
     -- Create a tasklist widget
-    s.mytasklist= awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+    local tasklistw = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+    local tasklistwidget = widget_wrap(tasklistw, true)
+
+    -- Create Systray widget
+    local systraywidget = widget_wrap(wibox.widget.systray())
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height=19 })
+    s.wibox = awful.wibar({ position = "top", screen = s, height=19, bg = beautiful.wibar_bg })
 
-    systray = wwidgets.helpers.add_background(wibox.widget.systray(), beautiful.fg_normal, beautiful.bg_systray)
-
-    s.mywibox:setup {
+    s.wibox:setup {
         layout = wibox.layout.align.horizontal(),
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            s.mytaglist,
+            taglistwidget,
             s.promptbox,
         },
         { -- Middle widget
             layout = wibox.layout.fixed.horizontal,
-            s.mytasklist
+            tasklistwidget
         },
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            systray,
+            systraywidget,
             cpuwidget,
             memorywidget,
             networkwidget,
             datewidget,
             volumewidget,
             batterywidget.widget,
-            s.mylayoutbox,
+            layoutboxwidget,
         },
     }
 end)
@@ -429,6 +452,10 @@ root.buttons(awful.util.table.join(
 -- }}}
 
 -- {{{ Key bindings
+
+-- Used to lock the mouse to a screen
+local mouse_locked_client = nil
+
 globalkeys = awful.util.table.join(
     -- Fn and multimedia keys
     awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn("xbacklight -dec 1 -steps 1", false) end),
@@ -504,14 +531,6 @@ globalkeys = awful.util.table.join(
         if client.focus then client.focus:raise() end
     end, { description = "focus right", group = "client" }),
 
-    awful.key({ modkey, }, "Tab", function()
-        simpletab.switch(1, "Super_L", "Tab", "ISO_Left_Tab")
-    end, { description = "focus next", group = "client" }),
-
-    awful.key({ modkey, "Shift" }, "Tab", function()
-        simpletab.switch(-1, "Super_L", "Tab", "ISO_Left_Tab")
-    end, { description = "focus last", group = "client" }),
-
     awful.key({ modkey, }, "m", function(c) client.focus.fullscreen = not client.focus.fullscreen end,
         { description = "fullscreen", group = "client" }),
 
@@ -538,8 +557,30 @@ globalkeys = awful.util.table.join(
         awful.util.eval, nil,
         awful.util.getdir("cache") .. "/history_eval")
     end, { description = "lua prompt", group = "awesome" }),
-    -- awful.key({ modkey, }, "p", function() menubar.show() end),
-    -- awful.key({ modkey, altkey }, "Return", function() drop(terminal .. " -e 'tmux new-session -A -s drop'", "top", "center", 1, 1, true, 1) end),
+    awful.key({ modkey, "Shift"}, "v", function() 
+        local f = function(s)
+            if mouse_locked_client then
+                client.focus = mouse_locked_client
+
+                cg = client.focus:geometry()
+                mg = mouse.coords()
+
+                newx = mg.x > cg.x + cg.width and cg.x + cg.width or mg.x < cg.x and cg.x
+                newy = mg.y > cg.y + cg.height and cg.y + cg.height or mg.y < cg.y and cg.y
+
+                mouse.coords({ x = newx, y = newy }) 
+            end
+        end
+
+        if mouse_locked_client then
+            mouse_locked_client:disconnect_signal("mouse::leave", f)
+            mouse_locked_client = nil
+        else
+            mouse_locked_client = client.focus
+            mouse_locked_client:connect_signal("mouse::leave", f)
+        end
+
+    end, { description = "lock mouse within client", group = "awesome" }),
 
     awful.key({ modkey }, "XF86AudioMute", function()
         text = "Notifications disabled"
@@ -612,10 +653,7 @@ globalkeys = awful.util.table.join(
     -------------------------------------
 
     awful.key({ modkey, altkey }, "m", function()
-        local matcher = function(c)
-            return awful.rules.match(c, { class = mail.class })
-        end
-        awful.client.run_or_raise(mail.cmd, matcher)
+        awful.spawn(mail)
     end, { description = "mail", group = "application"}),
 
     -- awful.key({ modkey, altkey }, "m", function()
@@ -726,55 +764,34 @@ awful.rules.rules = {
             buttons = clientbuttons,
             screen = awful.screen.preferred,
             placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+            -- floating = false,
+            -- maximized_horizontal = false,
+            -- maximized_vertical = false,
+            -- maximized = false,
         }
     },
---     -- Force the first Firefox window to tag 1 on screen 1
---    { rule = { class = "Firefox"},
---        callback = function(c)
---            local filter = function(c)
---                return awful.rules.match(c, {class = "Firefox"})
---            end
---            local ff_windows = 0
---            for _ in awful.client.iterate(filter) do
---                ff_windows = ff_windows + 1
---            end
---            if ff_windows <= 1 then
---                c:tags({screen[1].tags[1]})
---            end
---        end
---    },
     { rule = { class = "VirtualBox" },
         except = { name = "Oracle VM VirtualBox Manager" },
         properties = { floating = true, size_hints_honor = true }
     },
---    { rule = { class = "Firefox" },
---        except = { instance = "Navigator" },
---        properties = { floating = true, size_hints_honor = true }
---    },
---    { rule = { class = "Steam" },
---        except = { name = "Steam" },
---        properties = { floating = true, size_hints_honor = true }
---    },
     { rule_any = {
             class = {
                 "mpv",
                 "feh",
                 "pinentry",
-                "Gimp-2.8",
+                --"Gimp-2.8",
                 "Guvcview",
                 "Vlc",
+                "Xephyr",
                 "Plugin-container",
                 "Telegram",
                 "Cutegram",
-                "Pavucontrol",
+                --"Pavucontrol",
                 "Keepassx"
             }
         },
         properties = { floating = true, size_hints_honor = true }
     },
---    { rule = { class = mail.class },
---        properties = { screen = 1, tag = "9" }
---    },
 }
 -- }}}
 
@@ -823,9 +840,9 @@ end)
 -- {{{ Startup applications
 do
     local cmds = {
---        "firefox",
---        "evolution",
---        "owncloud"
+        "firefox",
+        "evolution",
+        "owncloud"
     }
 
     for _, cmd in pairs(cmds) do
