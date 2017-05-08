@@ -78,13 +78,6 @@ function notify(message)
     naughty.notify({ text = tostring(message) }) 
 end
 
-function log(message)
-    local file = assert(io.open("/tmp/rc.log", "a"), "Cannot open log file")
-    file:write(message .. "\n")
-    file:close()
-end
-log('--------------------------------------------------')
-
 function table_to_string(table, indent)
     local indent = indent or 0
     local s = ""
@@ -287,7 +280,6 @@ vicious.register(datew, vicious.widgets.date, "%b %d %Y "
 
 datewidget = widget_wrap(datew)
 widget_tooltip(datewidget, "echo; date; echo; cal -3 -m | head -n -1")
---log(table_to_string(datewidget))
 datewidget:buttons(awful.util.table.join(
     awful.button({ }, 1, function(t)
         awful.spawn(calendar)
@@ -436,7 +428,6 @@ awful.screen.connect_for_each_screen(function(s)
             networkwidget,
             datewidget,
             volumewidget,
-            batterywidget.widget,
             layoutboxwidget,
         },
     }
