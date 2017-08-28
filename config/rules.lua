@@ -13,10 +13,10 @@ c.awful.rules.rules = {
 			buttons = c.bindings.buttons.client,
 			screen = c.awful.screen.preferred,
 			placement = c.awful.placement.no_overlap+c.awful.placement.no_offscreen,
-			-- floating = false,
-			-- maximized_horizontal = false,
-			-- maximized_vertical = false,
-			-- maximized = false,
+			--floating = false,
+			maximized_horizontal = false,
+			maximized_vertical = false,
+			maximized = false,
 		}
 	},
 	{
@@ -54,7 +54,8 @@ c.awful.rules.rules = {
 		},
 		properties = {
 			screen = 1,
-			tag = c.tags.names[1][4]
+			tag = c.tags.names[1][4],
+			floating = true
 		}
 	},
 	{ 
@@ -66,7 +67,7 @@ c.awful.rules.rules = {
 		},
 		properties = {
 			screen = 1,
-			tag = c.tags.names[1][5]
+			tag = c.tags.names[1][5],
 		}
 	},
 	{ 
@@ -78,7 +79,6 @@ c.awful.rules.rules = {
 		properties = {
 			screen = 1,
 			tag = c.tags.names[1][6],
-			floating = false
 		}
 	}
 }

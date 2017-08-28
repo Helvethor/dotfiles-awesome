@@ -6,7 +6,7 @@ function errors.init()
 	-- fallback config)
 
 	if awesome.startup_errors then
-		errors.notify({
+		c.naughty.notify({
 			preset = c.naughty.config.presets.critical,
 			title = "Oops, there were errors during startup!",
 			text = awesome.startup_errors })
@@ -19,7 +19,7 @@ function errors.init()
 		if in_error then return end
 		in_error = true
 
-		errors.notify({
+		c.naughty.notify({
 			preset = c.naughty.config.presets.critical,
 			title = "Oops, an error happened!",
 			text = tostring(err) })
