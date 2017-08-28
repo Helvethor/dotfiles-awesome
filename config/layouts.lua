@@ -1,12 +1,22 @@
 local layouts = {}
 
-layouts.list = {
-	c.awful.layout.suit.tile.left,
-	c.awful.layout.suit.tile.right,
-	c.awful.layout.suit.tile.bottom,
-	c.awful.layout.suit.fair,
-	c.awful.layout.suit.magnifier
+layouts.named = {
+	tl = c.awful.layout.suit.tile.left,
+	tr = c.awful.layout.suit.tile.right,
+	tb = c.awful.layout.suit.tile.left,
+	fr = c.awful.layout.suit.tile.fair,
+	mg = c.awful.layout.suit.tile.magnifier
 }
+
+layouts.list = {
+	tl,
+	tr,
+	tb,
+	fr,
+	mg
+}
+
+
 
 return layouts
 

@@ -1,6 +1,8 @@
 local dpi = require("beautiful").xresources.apply_dpi
 local tags = {}
 
+local l = c.layouts.named
+
 tags.names = {
 --	{ "1", "2", "3", "4", "5", "6" },
 	{ "I", "II", "III", "IV", "V", "VI" },
@@ -10,6 +12,11 @@ tags.names = {
 tags.keys = {
 	{ "#10", "#11", "#12", "#13", "#14", "#15" },
 	{ "q", "w", "e", "r", "t", "z" }
+}
+
+tags.layouts = {
+	{l.mg, l.tl, l.tl, l.tl, l.mg, l.tl},
+	{l.mg, l.tl, l.tl, l.tl, l.tl, l.tl}
 }
 
 tags.buttons = c.awful.util.table.join(
@@ -27,7 +34,7 @@ function tags.add_to_screen(s)
 			gap = c.beautiful.useless_gap,
 			screen = s,
 			selected = i == 1,
-			layout = c.layouts.list[1]
+			layout = tags.layouts[s.index][i]
 		})
 	end
 end
