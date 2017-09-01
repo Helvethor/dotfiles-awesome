@@ -7,6 +7,7 @@ screen.widgets.memory = c.widgets.memory()
 screen.widgets.network = c.widgets.network()
 screen.widgets.date = c.widgets.date()
 screen.widgets.volume = c.widgets.volume()
+screen.widgets.battery = c.widgets.battery()
 
 function screen.connect_screen(s)
 	local wallpaper, layoutboxw, taglistw
@@ -36,6 +37,7 @@ function screen.connect_screen(s)
 			screen.widgets.cpu,
 			screen.widgets.memory,
 			screen.widgets.network,
+			screen.widgets.battery,
 			screen.widgets.date,
 			layoutboxw,
 		},

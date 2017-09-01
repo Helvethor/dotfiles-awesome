@@ -68,6 +68,7 @@ function widgets.init()
 	widgets.volume = require("config.widgets.volume")
 	widgets.taglist = require("config.widgets.taglist")
 	widgets.layoutbox = require("config.widgets.layoutbox")
+	widgets.battery= require("config.widgets.battery")
 end
 
 return widgets

@@ -15,8 +15,8 @@ tags.keys = {
 }
 
 tags.layouts = {
-	{l.mg, l.tl, l.tl, l.tl, l.mg, l.tl},
-	{l.mg, l.tl, l.tl, l.tl, l.tl, l.tl}
+	{l.tl, l.tl, l.tl, l.tl, l.mg, l.tl},
+	{l.tl, l.tl, l.tl, l.tl, l.tl, l.tl}
 }
 
 tags.buttons = c.awful.util.table.join(

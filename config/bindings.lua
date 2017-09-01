@@ -50,10 +50,10 @@ bindings.keys.misc = gtable.join(
 			})
 		end,
 		{ description = "screenshot", group = "misc" }),
-	-- TODO: lock screen
 	akey({ modkey, ctrlkey }, "s",
 		function()
-			lockcmd = "i3lock -S 0 -f -c '" .. c.beautiful.bg .. "'"
+			lockcmd = c.common.homedir
+				.. '/.config/i3lock/downsample.sh'
 			c.awful.spawn(lockcmd, false)
 		end,
 		{ description = "lock screen", group = "misc" }),

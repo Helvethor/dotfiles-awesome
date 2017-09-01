@@ -6,7 +6,6 @@ common.themedir = common.confdir .. "/themes/nord"
 common.themefile = common.themedir .. "/theme.lua"
 
 common.hostname = io.popen("hostname"):read()
-common.networkinterface = "enp0s25"
 
 common.modkey = "Mod4"
 common.altkey = "Mod1"
