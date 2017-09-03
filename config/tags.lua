@@ -3,6 +3,10 @@ local tags = {}
 
 local l = c.layouts.named
 
+local function mg_callback(tag)
+	c.awful.tag.incmwfact(0.3, tag)
+end
+
 tags.names = {
 --	{ "1", "2", "3", "4", "5", "6" },
 	{ "I", "II", "III", "IV", "V", "VI" },
@@ -19,6 +23,11 @@ tags.layouts = {
 	{l.tl, l.tl, l.tl, l.tl, l.tl, l.tl}
 }
 
+tags.callbacks = {
+	{nil, nil, nil, nil, mg_callback, nil},
+	{nil, nil, nil, nil, nil, nil}
+}
+
 tags.buttons = c.awful.util.table.join(
 	c.awful.button({ }, 1, c.awful.tag.viewonly),
 	c.awful.button({ c.common.modkey }, 1, c.awful.client.movetotag),
@@ -30,12 +39,16 @@ tags.buttons = c.awful.util.table.join(
 
 function tags.add_to_screen(s)
 	for i, tag_name in pairs(tags.names[s.index]) do
-		c.awful.tag.add(tag_name, { 
+		tag = c.awful.tag.add(tag_name, { 
 			gap = c.beautiful.useless_gap,
 			screen = s,
 			selected = i == 1,
-			layout = tags.layouts[s.index][i]
+			layout = tags.layouts[s.index][i],
 		})
+		local callback = tags.callbacks[s.index][i]
+		if callback then
+			callback(tag)
+		end
 	end
 end
 

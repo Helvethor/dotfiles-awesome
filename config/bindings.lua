@@ -50,13 +50,7 @@ bindings.keys.misc = gtable.join(
 			})
 		end,
 		{ description = "screenshot", group = "misc" }),
-	akey({ modkey, ctrlkey }, "s",
-		function()
-			lockcmd = c.common.homedir
-				.. '/.config/i3lock/downsample.sh'
-			c.awful.spawn(lockcmd, false)
-		end,
-		{ description = "lock screen", group = "misc" }),
+
 	-- {{{ Lock mouse within client
 	akey({ modkey, shiftkey}, "v",
 		function() 
@@ -106,7 +100,19 @@ bindings.keys.awesome = gtable.join(
 		function()
 			hotkeys_popup.show_help()
 		end,
-		{ description = "hotkeys", group = "awesome" })
+		{ description = "hotkeys", group = "awesome" }),
+	akey({ modkey, shiftkey }, "v",
+		function()
+			c.widgets.refresh(c.screen.widgets)
+		end,
+		{ description = "refresh widgets", group = "awesome" }),
+	akey({ modkey, shiftkey }, "s",
+		function()
+			lockcmd = c.common.homedir
+				.. '/.config/i3lock/downsample.sh'
+			c.awful.spawn(lockcmd, false)
+		end,
+		{ description = "lock screen", group = "awesome" })
 )
 -- }}}
 
@@ -170,24 +176,6 @@ bindings.keys.rofi = gtable.join(
 			spawn_rofi("ssh")
 		end)
 )
--- }}}
-
--- {{{ tmptmptmp
---	 akey({ modkey, ctrlkey }, "Return",
---		function(c) c:swap(c.awful.client.getmaster()) end),
---	 akey({ modkey, }, "<", c.awful.client.movetoscreen ),
---	 akey({ modkey, }, "d",
---		function(c) c.ontop = not c.ontop end),
---	 akey({ modkey, }, "s",
---		function(c) c.sticky = not c.sticky end),
---	 akey({ modkey, }, "n",
---		function(c) c.minimized = true end),
---	 akey({ modkey, }, "m",
---		function(c)
---		 c.maximized_horizontal = not c.maximized_horizontal
---		 c.maximized_vertical = not c.maximized_vertical
---	 end)
--- )
 -- }}}
 
 -- {{{ Tags
@@ -282,17 +270,33 @@ bindings.keys.client = gtable.join(
 
 	-- Manage clients
 	akey({ modkey, }, "m",
-		function(c)
+		function()
 			client.focus.fullscreen = not client.focus.fullscreen
 		end,
 		{ description = "fullscreen", group = "client" }),
 	akey({ modkey, }, "c",
-		function(c)
+		function()
 			client.focus:kill()
 		end,
 		{ description = "kill", group = "client" }),
-	akey({ modkey }, "f", c.awful.client.floating.toggle,
-		{ description = "float toggle", group = "client" })
+	akey({ modkey }, "f", 
+		function()
+			client.focus.floating = not client.focus.floating
+		end,
+		{ description = "float", group = "client" }),
+	akey({ modkey, }, "s",
+		function()
+			client.focus.sticky = not client.focus.sticky
+		end,
+		{ description = "sticky", group = "client" }),
+	akey({ modkey, }, "n",
+		function()
+			client.focus.maximized_horizontal
+				= not client.focus.maximized_horizontal
+			client.focus.maximized_vertical
+				= not client.focus.maximized_vertical
+		end,
+		{ description = "maximize", group = "client" })
 )
 
 bindings.buttons.client = gtable.join(

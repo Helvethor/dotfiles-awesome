@@ -5,7 +5,6 @@ function widgets.wrap(widget, no_border)
 	local force = function()
 		local widget = widget
 		c.vicious.force({ widget })
-		c.gears.debug.dump(widget, "wt", 1)
 	end
 
 	local border = not no_border
@@ -59,6 +58,12 @@ function widgets.set_tooltip(widget, command)
 	})
 end
 
+function widgets.refresh(widgets)
+	for name, widget in pairs(widgets) do
+		widget.force()
+	end
+end
+
 function widgets.init()
 	widgets.arch = require("config.widgets.arch")
 	widgets.cpu = require("config.widgets.cpu")
@@ -68,7 +73,7 @@ function widgets.init()
 	widgets.volume = require("config.widgets.volume")
 	widgets.taglist = require("config.widgets.taglist")
 	widgets.layoutbox = require("config.widgets.layoutbox")
-	widgets.battery= require("config.widgets.battery")
+	widgets.battery = require("config.widgets.battery")
 end
 
 return widgets

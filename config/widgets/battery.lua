@@ -1,7 +1,23 @@
 ---- Battery
 
+local function get_battery()
+	local file = assert(io.popen('ls /sys/class/power_supply', 'r'))
+	local output = file:read('*all')
+	file:close()
+	for battery in output:gmatch("%w+") do
+		return battery
+	end
+end
+
+
 local function battery()
 	local wt, wm, wbk, wb
+	local bat = get_battery()
+
+	if not bat then
+		return nil
+	end
+
 	wt = c.wibox.widget.textbox()
 	wm, wbk, wb = c.widgets.wrap(wt)
 	c.vicious.register(wt, c.vicious.widgets.bat, 
@@ -33,7 +49,7 @@ local function battery()
 
 			wb:set_color(color)
 			return text
-		end, 5, "BAT0")
+		end, 5, bat)
 	return wm
 
 end

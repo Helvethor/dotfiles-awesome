@@ -79,6 +79,7 @@ c.awful.rules.rules = {
 		properties = {
 			screen = 1,
 			tag = c.tags.names[1][6],
+			floating = false
 		}
 	}
 }

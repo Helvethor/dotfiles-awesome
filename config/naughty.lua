@@ -1,5 +1,10 @@
 local naughty = require("naughty")
 
+naughty.config = {
+	padding = c.beautiful.display_unit,
+	spacing = c.beautiful.display_unit
+}
+
 naughty.config.defaults = {
 	timeout = 10,
 	text = "",
