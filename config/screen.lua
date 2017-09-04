@@ -19,8 +19,20 @@ function screen.connect_screen(s)
 
 	layoutboxw = c.widgets.layoutbox(s)
 
-	s.wibar = c.awful.wibar({ position = "top", screen = s, height = c.beautiful.wibar_height,
-		bg = c.beautiful.wibar_bg })
+	s.wibar = c.awful.wibar({
+		position = "top",
+		screen = s,
+		ontop = true,
+		stretch = false,
+		width = c.beautiful.wibar_width(s.geometry.width),
+		height = c.beautiful.wibar_height,
+	})
+	s.wibar.x = c.beautiful.wibar_x(s.geometry.x)
+	s.wibar.y = c.beautiful.wibar_y(s.geometry.y)
+	s.padding = {
+		top = 2 * c.beautiful.margin
+	}
+
 	s.wibar:setup {
 		layout = c.wibox.layout.align.horizontal(),
 		{ -- Left widgets

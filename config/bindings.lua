@@ -389,21 +389,25 @@ bindings.buttons.arch = gtable.join(
 bindings.buttons.volume = gtable.join(
 	c.awful.button({ }, 1,
 		function(t)
+			c.common.quicknote(t, 3)
 			c.awful.spawn(volume_mixer)
 		end),
 	c.awful.button({ }, 3,
 		function(t)
-			c.awful.spawn("amixer set Master toggle")
+			--c.awful.spawn("amixer set Master toggle")
+			c.awful.spawn('pulseaudio-ctl mute')
 			c.screen.widgets.volume.force()
 		end),
 	c.awful.button({ }, 4,
 		function(t)
-			c.awful.spawn("amixer set Master 1%+")
+			--c.awful.spawn("amixer set Master 1%+")
+			c.awful.spawn('pulseaudio-ctl up 1%')
 			c.screen.widgets.volume.force()
 		end),
 	c.awful.button({ }, 5,
 		function(t)
-			c.awful.spawn("amixer set Master 1%-")
+			--c.awful.spawn("amixer set Master 1%-")
+			c.awful.spawn('pulseaudio-ctl down 1%')
 			c.screen.widgets.volume.force()
 		end)
 )

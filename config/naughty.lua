@@ -6,28 +6,36 @@ naughty.config = {
 }
 
 naughty.config.defaults = {
-	timeout = 10,
-	text = "",
+	timeout = 8,
 	screen = 1,
 	ontop = true,
-	margin = c.beautiful.margin,
-	opacity = c.beautiful.naughty_opacity,
-	border_width = c.beautiful.border_width,
-	border_color = c.beautiful.focus,
-	fg = c.beautiful.fg,
-	bg = c.beautiful.bg,
 	position = "bottom_right"
 }
+
 naughty.config.presets = {
 	normal = {},
 	low = {
-		timeout = 10
+		border_color = c.beautiful.nofocus,
+		timeout = 4
+	},
+	debug = {
+		title = "Debug",
+		border_color = c.beautiful.mark,
+		timeout = 0,
 	},
 	critical = {
+		title = "Error",
 		border_color = c.beautiful.urgent,
+		bg = c.beautiful.bg,
+		fg = c.beautiful.fg,
 		timeout = 0,
 	}
 }
+
+--naughty.notify({preset=naughty.config.presets.low, text='low'})
+--naughty.notify({preset=naughty.config.presets.normal, text='normal'})
+--naughty.notify({preset=naughty.config.presets.debug, text='debug'})
+--naughty.notify({preset=naughty.config.presets.critical, text='critical'})
 
 return naughty
 

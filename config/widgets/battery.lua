@@ -5,7 +5,9 @@ local function get_battery()
 	local output = file:read('*all')
 	file:close()
 	for battery in output:gmatch("%w+") do
-		return battery
+		if string.sub(battery, 1, 3) == 'BAT' then
+			return battery
+		end
 	end
 end
 

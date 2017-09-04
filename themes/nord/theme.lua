@@ -1,4 +1,3 @@
-local gears = require("gears")
 theme = {}
 theme.dir = c.common.themedir
 theme.color	= {}
@@ -105,6 +104,9 @@ theme.useless_gap	= theme.display_unit
 theme.wibar_bg		= theme.bg
 theme.wibar_fg		= theme.fg
 theme.wibar_height	= theme.display_unit * 2
+theme.wibar_width	= function(w) return w - 4 * theme.margin end
+theme.wibar_x		= function(ox) return ox + 2 * theme.margin end
+theme.wibar_y		= function(oy) return oy + 2 * theme.margin end
 -- }}}
 
 -- {{{ Widgets

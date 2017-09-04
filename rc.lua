@@ -2,14 +2,14 @@ c = {}
 
 c.common = require("config.common")
 
+c.beautiful = require("config.beautiful")
+c.beautiful.init()
+
 c.awful = require("config.awful")
 c.gears = require("gears")
 c.wibox = require("wibox")
-c.naughty = require("naughty")
+c.naughty = require("config.naughty")
 c.vicious = require("vicious")
-
-c.beautiful = require("config.beautiful")
-c.beautiful.init()
 
 c.errors = require("config.errors")
 c.errors.init()
