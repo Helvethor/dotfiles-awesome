@@ -13,7 +13,8 @@ theme.color	= {}
 -- }}}
 theme.font = "dina 8"
 theme.icon_theme = "Paper"
-theme.wallpaper = theme.dir .. "/wallpaper.png"
+theme.wallpaper_dir = theme.dir .. "/wallpapers"
+theme.wallpaper = theme.wallpaper_dir .. "/wallpaper.png"
 
 function theme.iconify(value)
 	return "<span font-family='Wuncon Siji'"
