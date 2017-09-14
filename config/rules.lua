@@ -20,8 +20,19 @@ c.awful.rules.rules = {
 		}
 	},
 	{
-		rule = { class = "VirtualBox" },
-		except = { name = "Oracle VM VirtualBox Manager" },
+		rule_any = { 
+			class = {
+				"VirtualBox",
+				"Virt-manager",
+				"Vinagre"
+			}
+		},
+		except_any = {
+			name = {
+				"Oracle VM VirtualBox Manager",
+				"Virtual Machine Manager"
+			},
+		},
 		properties = { floating = true, size_hints_honor = true }
 	},
 	{
@@ -38,8 +49,8 @@ c.awful.rules.rules = {
 				"Telegram",
 				"Cutegram",
 				"Pavucontrol",
-				"Keepassx"
-			}
+				"Keepassx",
+			},
 		},
 		properties = {
 			floating = true,
@@ -56,6 +67,21 @@ c.awful.rules.rules = {
 			screen = 1,
 			tag = c.tags.names[1][4],
 			floating = true
+		}
+	},
+	{
+		rule_any = {
+			class = {
+				"Inkscape"
+			}
+		},
+		properties = {
+			screen					= 1,
+			tag						= c.tags.names[1][3],
+			fullscreen				= false,
+			maximized_vertical		= false,
+			maximized_horizontal	= false,
+			floating				= false
 		}
 	},
 	{ 

@@ -22,7 +22,7 @@ function screen.connect_screen(s)
 	s.wibar = c.awful.wibar({
 		position = "top",
 		screen = s,
-		ontop = true,
+		--ontop = true,
 		stretch = false,
 		width = c.beautiful.wibar_width(s.geometry.width),
 		height = c.beautiful.wibar_height,
@@ -30,7 +30,7 @@ function screen.connect_screen(s)
 	s.wibar.x = c.beautiful.wibar_x(s.geometry.x)
 	s.wibar.y = c.beautiful.wibar_y(s.geometry.y)
 	s.padding = {
-		top = 2 * c.beautiful.margin
+		top = c.beautiful.wibar_margin
 	}
 
 	s.wibar:setup {

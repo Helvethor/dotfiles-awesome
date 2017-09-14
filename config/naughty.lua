@@ -1,7 +1,7 @@
 local naughty = require("naughty")
 
 naughty.config = {
-	padding = c.beautiful.display_unit,
+	padding = c.beautiful.display_unit * 2,
 	spacing = c.beautiful.display_unit
 }
 

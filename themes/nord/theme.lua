@@ -14,7 +14,7 @@ theme.color	= {}
 theme.font = "dina 8"
 theme.icon_theme = "Paper"
 theme.wallpaper_dir = theme.dir .. "/wallpapers"
-theme.wallpaper = theme.wallpaper_dir .. "/wallpaper.png"
+theme.wallpaper = theme.wallpaper_dir .. "/wallpaper"
 
 function theme.iconify(value)
 	return "<span font-family='Wuncon Siji'"
@@ -96,18 +96,20 @@ theme.display_unit	= 15
 theme.margin		= theme.display_unit
 theme.opacity		= 1
 theme.border_width	= 2
-theme.bg_normal = theme.bg
-theme.fg_normal = theme.fg
-theme.useless_gap	= theme.display_unit
+theme.bg_normal		= theme.bg
+theme.fg_normal		= theme.fg
+theme.gap			= theme.display_unit * 1
+theme.useless_gap	= theme.gap / 2
 -- }}}
 
 -- {{{ Wibar
 theme.wibar_bg		= theme.bg
 theme.wibar_fg		= theme.fg
+theme.wibar_margin	= theme.gap
 theme.wibar_height	= theme.display_unit * 2
-theme.wibar_width	= function(w) return w - 4 * theme.margin end
-theme.wibar_x		= function(ox) return ox + 2 * theme.margin end
-theme.wibar_y		= function(oy) return oy + 2 * theme.margin end
+theme.wibar_width	= function(w) return w - 2 * theme.wibar_margin end
+theme.wibar_x		= function(ox) return ox + theme.wibar_margin end
+theme.wibar_y		= function(oy) return oy + theme.wibar_margin end
 -- }}}
 
 -- {{{ Widgets

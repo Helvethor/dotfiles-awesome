@@ -11,73 +11,111 @@ local akey = c.awful.key
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 
--- Used to lock the mouse to a screen
-local mouse_locked_client = nil
-
 -- {{{ Miscellaneous
+
+-- {{{ Screenshot function
+local function screenshot(region, clipboard)
+	local command = "maim "
+	local text = "The screenshot was "
+	if region then
+		command = command .. "-s "
+	end
+	if clipboard then
+		command = command .. "| xclip -selection clipboard -t image/png"
+		text = text .. "copied to clipboard"
+	else
+		local filename = c.common.homedir .. "/media/pictures/screenshots/"
+			.. os.date("%Y-%m-%d_%H-%M-%S") .. ".png"
+		command = command .. filename 
+		text = text .. "saved as\n" .. filename
+	end
+	
+	c.awful.spawn.easy_async_with_shell(command,
+		function()
+			c.naughty.notify({
+				title = "Screenshot taken",
+				text = text,
+				screen = mouse.screen,
+				timeout = 2,
+			})
+		end)
+end
+-- }}}
+
+-- {{{ Lock mouse function
+local mouse_locked_client = nil
+local function lock_mouse()
+	local f = function(s)
+		if mouse_locked_client then
+			client.focus = mouse_locked_client
+
+			cg = client.focus:geometry()
+			mg = mouse.coords()
+
+			newx = mg.x > cg.x + cg.width
+				and cg.x + cg.width or mg.x < cg.x and cg.x
+			newy = mg.y > cg.y + cg.height
+				and cg.y + cg.height or mg.y < cg.y and cg.y
+
+			mouse.coords({ x = newx, y = newy }) 
+		end
+	end
+
+	if mouse_locked_client then
+		mouse_locked_client:disconnect_signal("mouse::leave", f)
+		mouse_locked_client = nil
+	else
+		mouse_locked_client = client.focus
+		mouse_locked_client:connect_signal("mouse::leave", f)
+	end
+end
+-- }}}
+
 bindings.keys.misc = gtable.join(
 	akey({ }, "XF86MonBrightnessDown",
-		function ()
+		function()
 			c.awful.spawn("xbacklight -dec 1 -steps 1", false)
 		end),
 	akey({ }, "XF86MonBrightnessUp",
-		function ()
+		function()
 			c.awful.spawn("xbacklight -inc 1 -steps 1", false)
 		end),
 	-- TODO: Rebind
 	akey({ }, "XF86AudioRaiseVolume",
-		function ()
-			alsawidget.increase_vol()
+		function()
+			c.screen.widgets.volume.up()
 		end),
 	akey({ }, "XF86AudioLowerVolume",
-		function ()
-			alsawidget.decrease_vol()
+		function()
+			c.screen.widgets.volume.down()
 		end),
 	akey({ }, "XF86AudioMute",
-		function ()
-			alsawidget.toggle_mute()
+		function()
+			c.screen.widgets.volume.mute()
 		end),
 	-- Take a screenshot
-	akey({ modkey }, "Print",
+	akey({ }, "Print",
+		screenshot,
+		{ description = "screenshot", group = "misc" }),
+	akey({ shiftkey }, "Print",
 		function()
-			local filename = c.common.homedir .. "/media/pictures/screenshots/" .. os.date("%Y-%m-%d_%H-%M-%S") .. ".png"
-			c.awful.spawn("scrot " .. filename, false)
-			naughty.notify({
-				title = "Screenshot taken",
-				text = "The screenshot was saved as \n" .. filename,
-				screen = mouse.screen,
-				timeout = 2,
-			})
+			screenshot(true, false)
 		end,
 		{ description = "screenshot", group = "misc" }),
-
-	-- {{{ Lock mouse within client
-	akey({ modkey, shiftkey}, "v",
-		function() 
-			local f = function(s)
-				if mouse_locked_client then
-					client.focus = mouse_locked_client
-
-					cg = client.focus:geometry()
-					mg = mouse.coords()
-
-					newx = mg.x > cg.x + cg.width
-						and cg.x + cg.width or mg.x < cg.x and cg.x
-					newy = mg.y > cg.y + cg.height
-						and cg.y + cg.height or mg.y < cg.y and cg.y
-
-					mouse.coords({ x = newx, y = newy }) 
-				end
-			end
-
-			if mouse_locked_client then
-				mouse_locked_client:disconnect_signal("mouse::leave", f)
-				mouse_locked_client = nil
-			else
-				mouse_locked_client = client.focus
-				mouse_locked_client:connect_signal("mouse::leave", f)
-			end
+	akey({ ctrlkey }, "Print",
+		function()
+			screenshot(false, true)
 		end,
+		{ description = "screenshot", group = "misc" }),
+	akey({ ctrlkey, shiftkey }, "Print",
+		function()
+			screenshot(true, true)
+		end,
+		{ description = "screenshot", group = "misc" }),
+	
+	-- {{{ Lock mouse within client
+	akey({ modkey, shiftkey }, "b",
+		lock_mouse,
 		{ description = "lock mouse within client", group = "awesome" })
 	-- }}}
 )
@@ -269,7 +307,7 @@ bindings.keys.client = gtable.join(
 		{ description = "focus right", group = "client" }),
 
 	-- Manage clients
-	akey({ modkey, }, "m",
+	akey({ modkey, }, "u",
 		function()
 			client.focus.fullscreen = not client.focus.fullscreen
 		end,
@@ -289,12 +327,9 @@ bindings.keys.client = gtable.join(
 			client.focus.sticky = not client.focus.sticky
 		end,
 		{ description = "sticky", group = "client" }),
-	akey({ modkey, }, "n",
+	akey({ modkey, }, "m",
 		function()
-			client.focus.maximized_horizontal
-				= not client.focus.maximized_horizontal
-			client.focus.maximized_vertical
-				= not client.focus.maximized_vertical
+			client.focus.maximized = not client.focus.maximized
 		end,
 		{ description = "maximize", group = "client" })
 )
@@ -373,12 +408,12 @@ bindings.keys.layouts = gtable.join(
 -- {{{ Arch
 bindings.buttons.arch = gtable.join(
 	abutton({ }, 1,
-		function ()
+		function()
 			local command = c.apps.terminal .. " -e sudo pacman -Syu"
 			c.awful.spawn(command)
 		end),
 	abutton({ }, 3,
-		function ()
+		function()
 			local command = c.apps.terminal .. " -e pacaur -Syu"
 			c.awful.spawn(command)
 		end)
@@ -389,26 +424,19 @@ bindings.buttons.arch = gtable.join(
 bindings.buttons.volume = gtable.join(
 	c.awful.button({ }, 1,
 		function(t)
-			c.common.quicknote(t, 3)
 			c.awful.spawn(volume_mixer)
 		end),
 	c.awful.button({ }, 3,
 		function(t)
-			--c.awful.spawn("amixer set Master toggle")
-			c.awful.spawn('pulseaudio-ctl mute')
-			c.screen.widgets.volume.force()
+			c.screen.widgets.volume.mute()
 		end),
 	c.awful.button({ }, 4,
 		function(t)
-			--c.awful.spawn("amixer set Master 1%+")
-			c.awful.spawn('pulseaudio-ctl up 1%')
-			c.screen.widgets.volume.force()
+			c.screen.widgets.volume.up()
 		end),
 	c.awful.button({ }, 5,
 		function(t)
-			--c.awful.spawn("amixer set Master 1%-")
-			c.awful.spawn('pulseaudio-ctl down 1%')
-			c.screen.widgets.volume.force()
+			c.screen.widgets.volume.down()
 		end)
 )
 -- }}}
