@@ -77,7 +77,7 @@ c.awful.rules.rules = {
 		},
 		properties = {
 			screen					= 1,
-			tag						= c.tags.names[1][3],
+			tag						= c.tags.names[1][4],
 			fullscreen				= false,
 			maximized_vertical		= false,
 			maximized_horizontal	= false,
