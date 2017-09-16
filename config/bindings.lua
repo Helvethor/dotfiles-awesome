@@ -64,10 +64,17 @@ local function lock_mouse()
 	if mouse_locked_client then
 		mouse_locked_client:disconnect_signal("mouse::leave", f)
 		mouse_locked_client = nil
+		text = "Mouse unlocked"
 	else
 		mouse_locked_client = client.focus
 		mouse_locked_client:connect_signal("mouse::leave", f)
+		text = "Mouse locked in client"
 	end
+
+	c.naughty.notify({
+		title = 'Mouse locker',
+		text = text
+	})
 end
 -- }}}
 
@@ -111,13 +118,7 @@ bindings.keys.misc = gtable.join(
 		function()
 			screenshot(true, true)
 		end,
-		{ description = "screenshot", group = "misc" }),
-	
-	-- {{{ Lock mouse within client
-	akey({ modkey, shiftkey }, "b",
-		lock_mouse,
-		{ description = "lock mouse within client", group = "awesome" })
-	-- }}}
+		{ description = "screenshot", group = "misc" })
 )
 -- }}}
 
@@ -145,9 +146,12 @@ bindings.keys.awesome = gtable.join(
 			c.widgets.refresh(c.screen.widgets)
 		end,
 		{ description = "refresh widgets", group = "awesome" }),
+	akey({ modkey, shiftkey }, "m",
+		lock_mouse,
+		{ description = "lock mouse within client", group = "awesome" }),
 	akey({ modkey, shiftkey }, "s",
 		function()
-			lockcmd = 'jautolock now lock',
+			lockcmd = 'jautolock now quicklock',
 			c.awful.spawn(lockcmd, false)
 		end,
 		{ description = "lock screen", group = "awesome" }),
