@@ -151,7 +151,7 @@ bindings.keys.awesome = gtable.join(
 		{ description = "lock mouse within client", group = "awesome" }),
 	akey({ modkey, shiftkey }, "s",
 		function()
-			lockcmd = 'jautolock now quicklock',
+			lockcmd = 'jautolock now lock',
 			c.awful.spawn(lockcmd, false)
 		end,
 		{ description = "lock screen", group = "awesome" }),
