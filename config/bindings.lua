@@ -122,6 +122,7 @@ bindings.keys.misc = gtable.join(
 -- }}}
 
 -- {{{ Awesome
+local jautolock_busy = false
 bindings.keys.awesome = gtable.join(
 	-- Awesome management
 	akey({ modkey, shiftkey }, "x",
@@ -146,11 +147,27 @@ bindings.keys.awesome = gtable.join(
 		{ description = "refresh widgets", group = "awesome" }),
 	akey({ modkey, shiftkey }, "s",
 		function()
-			lockcmd = c.common.homedir
-				.. '/.config/i3lock/downsample.sh'
+			lockcmd = 'jautolock now lock',
 			c.awful.spawn(lockcmd, false)
 		end,
-		{ description = "lock screen", group = "awesome" })
+		{ description = "lock screen", group = "awesome" }),
+	akey({ modkey, shiftkey }, "b",
+		function()
+			if jautolock_busy then
+				key = 'unbusy'
+			else
+				key = 'busy'
+			end
+			jautolock_busy = not jautolock_busy
+
+			c.awful.spawn('jautolock ' .. key, false)
+			c.naughty.notify({
+				title = 'jautolock',
+				text = 'Entering ' .. key .. ' mode'
+			})
+		end,
+		{ description = "(un)busy jautolock", group = "awesome" })
+
 )
 -- }}}
 

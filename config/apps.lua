@@ -10,17 +10,15 @@ apps.cloud = "nextcloud"
 apps.volume = apps.terminal .. " -e pulsemixer"
 apps.filemanager = apps.terminal .. " -e ranger"
 apps.filemanager_gui = "nautilus"
+apps.locker = "jautolock"
 
 apps.boot = {
 	apps.mail .. ' & ' .. apps.mail,
 	apps.browser,
 	apps.cloud,
 	apps.terminal,
-	apps.calendar
-}
-
-apps.second_call = {
-	apps.mail
+	apps.calendar,
+	apps.locker
 }
 
 function apps.spawn_once(command)
