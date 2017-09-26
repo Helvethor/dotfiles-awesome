@@ -81,13 +81,12 @@ end
 bindings.keys.misc = gtable.join(
 	akey({ }, "XF86MonBrightnessDown",
 		function()
-			c.awful.spawn("xbacklight -dec 1 -steps 1", false)
+			c.awful.spawn("xbacklight -dec 5 -steps 5", false)
 		end),
 	akey({ }, "XF86MonBrightnessUp",
 		function()
-			c.awful.spawn("xbacklight -inc 1 -steps 1", false)
+			c.awful.spawn("xbacklight -inc 5 -steps 5", false)
 		end),
-	-- TODO: Rebind
 	akey({ }, "XF86AudioRaiseVolume",
 		function()
 			c.screen.widgets.volume.up()
