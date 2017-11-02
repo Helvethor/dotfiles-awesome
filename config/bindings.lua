@@ -169,8 +169,19 @@ bindings.keys.awesome = gtable.join(
 				text = 'Entering ' .. key .. ' mode'
 			})
 		end,
-		{ description = "(un)busy jautolock", group = "awesome" })
-
+		{ description = "(un)busy jautolock", group = "awesome" }),
+	akey({ modkey, shiftkey }, "d",
+		function()
+			command = "cat .config/awesome/dev.lua"
+			c.awful.spawn.easy_async(command,
+				function(stdout, stderr, exitreason, exitcode)
+					if exitcode == 0 then
+						f = load(stdout)
+						xpcall(f, c.errors.handler)
+					end
+				end)
+		end,
+		{ description = "run dev.lua in current context", group = "awesome" })
 )
 -- }}}
 

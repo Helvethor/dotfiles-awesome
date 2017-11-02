@@ -14,7 +14,10 @@ function errors.init()
 
 	-- Handle runtime errors after startup
 	local in_error = false
-	awesome.connect_signal("debug::error", function (err)
+	awesome.connect_signal("debug::error", errors.handler)
+end
+
+function errors.handler(message)
 		-- Make sure we don't go into an endless error loop
 		if in_error then return end
 		in_error = true
@@ -22,10 +25,9 @@ function errors.init()
 		c.naughty.notify({
 			preset = c.naughty.config.presets.critical,
 			title = "Oops, an error happened!",
-			text = tostring(err) })
+			text = tostring(message) })
 		in_error = false
-	end)
-end
+	end
 
 return errors
 
