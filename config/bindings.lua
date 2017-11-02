@@ -107,17 +107,17 @@ bindings.keys.misc = gtable.join(
 		function()
 			screenshot(true, false)
 		end,
-		{ description = "screenshot", group = "misc" }),
+		{ description = "screenshot (region)", group = "misc" }),
 	akey({ ctrlkey }, "Print",
 		function()
 			screenshot(false, true)
 		end,
-		{ description = "screenshot", group = "misc" }),
+		{ description = "screenshot (clipboard)", group = "misc" }),
 	akey({ ctrlkey, shiftkey }, "Print",
 		function()
 			screenshot(true, true)
 		end,
-		{ description = "screenshot", group = "misc" })
+		{ description = "screenshot (region + clipboard)", group = "misc" })
 )
 -- }}}
 
