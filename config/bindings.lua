@@ -148,6 +148,13 @@ bindings.keys.awesome = gtable.join(
 	akey({ modkey, shiftkey }, "m",
 		lock_mouse,
 		{ description = "lock mouse within client", group = "awesome" }),
+	akey({ modkey, shiftkey }, "n",
+		function()
+			c.awful.spawn.easy_async('killall compton', function()
+				c.awful.spawn('compton -b')
+			end)
+		end,
+		{ description = "reload compton", group = "awesome" }),
 	akey({ modkey, shiftkey }, "s",
 		function()
 			lockcmd = 'jautolock now lock',

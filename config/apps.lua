@@ -11,6 +11,7 @@ apps.volume = apps.terminal .. " -e pulsemixer"
 apps.filemanager = apps.terminal .. " -e ranger"
 apps.filemanager_gui = "nautilus"
 apps.locker = "jautolock"
+apps.compositor = "compton"
 
 apps.boot = {
 	apps.mail .. ' & ' .. apps.mail,
@@ -18,7 +19,8 @@ apps.boot = {
 	apps.cloud,
 	apps.terminal,
 	apps.calendar,
-	apps.locker
+	apps.locker,
+	apps.compositor
 }
 
 function apps.spawn_once(command)
