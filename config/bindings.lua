@@ -1,4 +1,4 @@
-local bindings = { keys = {}, buttons= {}}
+local bindings = { keys = {}, buttons= {} }
 local modkey = c.common.modkey
 local altkey = c.common.altkey
 local shiftkey = c.common.shiftkey
@@ -210,9 +210,14 @@ bindings.keys.apps = gtable.join(
 			c.awful.spawn(c.apps.filemanager_gui)
 		end,
 		{ description = "filemanager (nautilus)", group = "application"}),
-	akey({ modkey, altkey }, "f",
+	akey({ modkey, altkey }, "q",
 		function()
 			c.awful.spawn(c.apps.browser)
+		end,
+		{ description = "browser (qutebrowser)", group = "application" }),
+	akey({ modkey, altkey }, "f",
+		function()
+			c.awful.spawn(c.apps.firefox)
 		end,
 		{ description = "browser (firefox)", group = "application" }),
 	akey({ modkey, }, "Return",
@@ -350,6 +355,12 @@ bindings.keys.client = gtable.join(
 			client.focus.fullscreen = not client.focus.fullscreen
 		end,
 		{ description = "fullscreen", group = "client" }),
+	akey({ modkey, }, "x",
+		function()
+			cmd = "xkill -id  " .. client.focus.window
+			c.awful.spawn(cmd)
+		end,
+		{ description = "kill", group = "client" }),
 	akey({ modkey, }, "c",
 		function()
 			client.focus:kill()

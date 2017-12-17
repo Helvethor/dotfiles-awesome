@@ -3,7 +3,8 @@ local apps = { }
 apps.terminal = os.getenv("TERMCMD") or "urxvt"
 apps.editor = apps.terminal .. " -e " .. os.getenv('EDITOR') or 'vim'
 apps.htop = apps.terminal .. " -e htop"
-apps.browser = "firefox"
+apps.firefox = "firefox"
+apps.browser = "qutebrowser"
 apps.calendar = "gnome-calendar"
 apps.mail = "geary"
 apps.cloud = "nextcloud"
@@ -12,6 +13,7 @@ apps.filemanager = apps.terminal .. " -e ranger"
 apps.filemanager_gui = "nautilus"
 apps.locker = "jautolock"
 apps.compositor = "compton"
+apps.keyboard = "gkbd"
 
 apps.boot = {
 	apps.mail .. ' & ' .. apps.mail,
@@ -20,7 +22,8 @@ apps.boot = {
 	apps.terminal,
 	apps.calendar,
 	apps.locker,
-	apps.compositor
+	apps.compositor,
+	apps.keyboard
 }
 
 function apps.spawn_once(command)
