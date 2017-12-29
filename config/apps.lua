@@ -1,15 +1,23 @@
 local apps = { }
 
-apps.terminal = os.getenv("TERMCMD") or "urxvt"
-apps.editor = apps.terminal .. " -e " .. os.getenv('EDITOR') or 'vim'
-apps.htop = apps.terminal .. " -e htop"
+function apps.vte(cmd)
+    if apps.terminal == 'termite' then
+        return apps.terminal .. ' -e "' .. cmd .. '"'
+    elseif apps.terminal == 'urxvt' then
+        return apps.terminal .. ' -e ' .. cmd
+    end
+end
+
+apps.terminal = os.getenv("TERMCMD") or "termite"
+apps.editor = apps.vte(os.getenv('EDITOR') or 'vim')
+apps.htop = apps.vte('htop')
 apps.firefox = "firefox"
 apps.browser = "qutebrowser"
 apps.calendar = "gnome-calendar"
 apps.mail = "geary"
 apps.cloud = "nextcloud"
-apps.volume = apps.terminal .. " -e pulsemixer"
-apps.filemanager = apps.terminal .. " -e ranger"
+apps.volume = apps.vte('pulsemixer')
+apps.filemanager = apps.vte('ranger')
 apps.filemanager_gui = "nautilus"
 apps.locker = "jautolock"
 apps.compositor = "compton"
@@ -43,6 +51,14 @@ function apps.init()
 	for _, app in pairs(apps.boot) do
 		apps.spawn_once(app)
 	end
+end
+
+function apps.vte(cmd)
+    if apps.terminal == 'termite' then
+        return apps.terminal .. ' -e "' .. cmd .. '"'
+    elseif apps.terminal == 'urxvt' then
+        return apps.terminal .. ' -e ' .. cmd
+    end
 end
 
 return apps

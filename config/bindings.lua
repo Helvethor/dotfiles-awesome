@@ -227,7 +227,7 @@ bindings.keys.apps = gtable.join(
 		{ description = "terminal@elli.lan", group = "application" }),
 	akey({ modkey, shiftkey }, "Return",
 		function()
-			c.awful.spawn(c.apps.terminal .. ' -e ssh elli.lan')
+			c.awful.spawn(c.apps.vte('ssh elli.lan'))
 		end,
 		{ description = "terminal", group = "application" })
 )
@@ -458,12 +458,12 @@ bindings.keys.layouts = gtable.join(
 bindings.buttons.arch = gtable.join(
 	abutton({ }, 1,
 		function()
-			local command = c.apps.terminal .. " -e sudo pacman -Syu"
+			local command = c.apps.vte("sudo pacman -Syu")
 			c.awful.spawn(command)
 		end),
 	abutton({ }, 3,
 		function()
-			local command = c.apps.terminal .. " -e pacaur -Syu"
+			local command = c.apps.vte("pacaur -Syu")
 			c.awful.spawn(command)
 		end)
 )
