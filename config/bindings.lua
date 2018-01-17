@@ -247,15 +247,18 @@ bindings.keys.rofi = gtable.join(
 	akey({ modkey }, spacekey,
 		function()
 			spawn_rofi({"drun", "run"})
-		end),
+		end,
+        { description = "rofi", group = "application" }),
 	akey({ modkey, shiftkey }, spacekey,
 		function()
 			spawn_rofi("window")
-		end),
+		end,
+        { description = "rofi window", group = "application" }),
 	akey({ modkey, altkey }, spacekey,
 		function()
 			spawn_rofi("ssh")
-		end)
+		end,
+        { description = "rofi ssh", group = "application" })
 )
 -- }}}
 

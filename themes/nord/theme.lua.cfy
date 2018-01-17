@@ -29,20 +29,20 @@ end
 theme.color.black	= "#000000"
 theme.color.white	= "#FFFFFF"
 
-theme.bg		= "#2E3440"
-theme.bg_alt	= "#3B4252"
+theme.bg		= "${{color.bg.0}}"
+theme.bg_alt	= "${{color.bg.1}}"
 
-theme.fg		= "#D8DEE9"
-theme.fg_alt	= "#4C566A"
+theme.fg		= "${{color.fg.0}}"
+theme.fg_alt	= "${{color.fg.1}}"
 
-theme.primary	= "#A3BE8C"
-theme.secondary	= "#EBCB8B"
+theme.primary	= "${{color.accent.0}}"
+theme.secondary	= "${{color.accent.1}}"
 
-theme.nofocus	= "#5E81AC"
-theme.focus		= "#A3BE8C"
-theme.warn		= "#EBCB8B"
-theme.mark		= "#B48EAD"
-theme.urgent	= "#BF616A"
+theme.nofocus	= "${{color.passiv}}"
+theme.focus		= "${{color.activ}}"
+theme.warn		= "${{color.warn}}"
+theme.mark		= "${{color.mark}}"
+theme.urgent	= "${{color.urgent}}"
 -- }}}
 
 -- }}}
