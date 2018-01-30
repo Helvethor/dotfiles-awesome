@@ -58,6 +58,10 @@ function widgets.set_tooltip(widget, command)
 	})
 end
 
+function widgets.color_text(text, color)
+    return "<span color=\"" .. color .. "\">" .. text .. "</span>"
+end
+
 function widgets.refresh(widgets)
 	for name, widget in pairs(widgets) do
 		widget.force()

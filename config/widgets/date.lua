@@ -18,10 +18,11 @@ local function date()
 	wt = c.wibox.widget.textbox()
 	wm, wbk, wb = c.widgets.wrap(wt)
 	state = "light"
-	icon = c.beautiful.iconify(0x00e017)
+	icon = 0x00e017
 
 	c.vicious.register(wt,
 		function ()
+            local date, time, hour, color
 			if state == "light" then
 				date = os.date("%d/%m/%y")
 				time = os.date("%R")
@@ -30,7 +31,19 @@ local function date()
 				time = os.date("%T")
 			end
 
-			text = date .. " " .. icon .. " " .. time
+            hour = tonumber(os.date("%H"))
+            if hour >= 22 or hour < 6 then
+                color = c.beautiful.color.blue
+            elseif hour < 12 then
+                color = c.beautiful.color.white
+            elseif hour < 16 then
+                color = c.beautiful.color.yellow
+            else 
+                color = c.beautiful.color.cyan
+            end
+
+            wb:set_color(color)
+			text = date .. " " .. c.beautiful.iconify(icon, color) .. " " .. time
 			
 			return text
 		end, nil, 1)

@@ -14,13 +14,14 @@ local function volume()
 			if mute then
 				color = c.beautiful.mark 
 				icon = 0x00e204
-			elseif args[1] > 90 then
-				color = c.beautiful.urgent
 			elseif args[1] > 75 then
+				color = c.beautiful.danger
+			elseif args[1] > 50 then
 				color = c.beautiful.warn
 			end
 			wb:set_color(color)
-			return c.beautiful.iconify(icon) .. " " .. args[1] .. "%"
+            local icon = c.beautiful.iconify(icon, color, true)
+            return icon .. " " .. args[1] .. "%"
 		end, 10, "Master")
 
 	function wm.up(n)

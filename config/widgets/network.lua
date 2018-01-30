@@ -16,16 +16,10 @@ end
 
 local function network()
 	local device = get_network_device()
-	--local w = c.wibox.widget.textbox()
-	--c.vicious.register(w, c.vicious.widgets.net,
-	--	c.beautiful.iconify(0x00e061) .. " ${" .. device .. " down_mb}M "
-	--		.. c.beautiful.iconify(0x00e060) .. " ${" .. device .. " up_mb}M")
-	--w = c.widgets.wrap(w)
-	--return w
-
 	local wt, wm, wbk, wb
 	wt = c.wibox.widget.textbox()
 	wm, wbk, wb = c.widgets.wrap(wt)
+
 	c.vicious.register(wt, c.vicious.widgets.net, 
 		function (wt, args)
 			local color, icon, text, carrier
@@ -34,15 +28,16 @@ local function network()
 			if carrier == 1 then
 				color = c.beautiful.nofocus
 				if string.sub(device, 1, 2) == "wl" then
-					icon = c.beautiful.iconify(0x00e21a)
+					icon = 0x00e21a
 				else
-					icon = c.beautiful.iconify(0x00e19c)
+					icon = 0x00e19c
 				end
 			else
-				color = c.beautiful.urgent
-				icon = c.beautiful.iconify(0x00e040)
+				color = c.beautiful.danger
+				icon = 0x00e040
 			end
 
+            icon = c.beautiful.iconify(icon, color, true)
 			text = icon .. " " .. device
 
 			wb:set_color(color)

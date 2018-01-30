@@ -1,6 +1,6 @@
 -- Arch updates
 
-local icon = c.beautiful.iconify(0x00e00f)
+local icon = 0x00e00f
 
 local function update(wt, wb)
 	return function ()
@@ -11,13 +11,14 @@ local function update(wt, wb)
 				-- Get arch updates
 				local slash_idx = stdout:find('/')
 				local arch_updates = tonumber(stdout:sub(1, slash_idx - 1))
+                local color = c.beautiful.nofocus
 				if arch_updates > 50 then
-					wb:set_color(c.beautiful.urgent)
+					color = c.beautiful.danger
 				elseif arch_updates > 25 then
-					wb:set_color(c.beautiful.warn)
-				else
-					wb:set_color(c.beautiful.nofocus)
+					color = c.beautiful.warning
 				end
+				wb:set_color(color)
+                local icon = c.beautiful.iconify(icon, color, true)
 				wt:set_markup(icon .. " " .. stdout)
 			end)
 		return true
@@ -29,7 +30,7 @@ local function arch()
 	local wt = c.wibox.widget.textbox()
 	local wm, wbk, wb = c.widgets.wrap(wt)
 	local uf = update(wt, wb)
-	wt:set_markup(icon .. " ?/?")
+	wt:set_markup(c.beautiful.iconify(icon) .. " ?/?")
 	wm:buttons(c.bindings.buttons.arch)
 	uf()
 	c.gears.timer({

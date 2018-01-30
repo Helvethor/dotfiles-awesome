@@ -2,7 +2,7 @@ local common = {}
 
 common.homedir = os.getenv("HOME")
 common.confdir = common.homedir .. "/.config/awesome"
-common.themedir = common.confdir .. "/themes/nord"
+common.themedir = common.confdir .. "/themes/flexible"
 common.themefile = common.themedir .. "/theme.lua"
 
 common.hostname = io.popen("hostname"):read()
@@ -38,7 +38,7 @@ function common.pprint(o, max_depth, depth)
 end
 
 function common.quicknote(o, max_depth)
-	local s = common.pprint(o, max_depth, 0)
+	local s = common.pprint(o, max_depth or 4, 0)
 	c.naughty.notify({ 
 		preset = c.naughty.config.presets.debug,
 		text = s

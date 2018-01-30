@@ -9,7 +9,7 @@ naughty.config.defaults = {
 	timeout = 8,
 	screen = 1,
 	ontop = true,
-	position = "bottom_right"
+	position = "bottom_left"
 }
 
 naughty.config.presets = {
@@ -25,7 +25,7 @@ naughty.config.presets = {
 	},
 	critical = {
 		title = "Error",
-		border_color = c.beautiful.urgent,
+		border_color = c.beautiful.danger,
 		bg = c.beautiful.bg,
 		fg = c.beautiful.fg,
 		timeout = 0,

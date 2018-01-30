@@ -31,13 +31,15 @@ local function update(w, buttons, label, data, tags)
             }
         end
 
-        local text, bg, bg_image, icon, args = label(t, tb)
+        local text, bg, bg_image, icon, args = label(t, tb), color, border
         args = args or {}
 
+        color = c.beautiful.fg
 		bg = c.beautiful.taglist_bg
 		if t.selected then
 			bg = c.beautiful.taglist_bg_selected
 			border = c.beautiful.taglist_border_focus
+            color = c.beautiful.fg_alt
 		elseif #t:clients() == 0 then
 			border = c.beautiful.taglist_border_empty
 		else
