@@ -24,7 +24,7 @@ local function screenshot(region, clipboard)
 		command = command .. "| xclip -selection clipboard -t image/png"
 		text = text .. "copied to clipboard"
 	else
-		local filename = c.common.homedir .. "/media/pictures/screenshots/"
+		local filename = c.common.screenshotdir .. "/"
 			.. os.date("%Y-%m-%d_%H-%M-%S") .. ".png"
 		command = command .. filename 
 		text = text .. "saved as\n" .. filename
@@ -122,7 +122,6 @@ bindings.keys.misc = gtable.join(
 -- }}}
 
 -- {{{ Awesome
-local jautolock_busy = false
 bindings.keys.awesome = gtable.join(
 	-- Awesome management
 	akey({ modkey, shiftkey }, "x",
@@ -157,7 +156,7 @@ bindings.keys.awesome = gtable.join(
 		{ description = "reload compton", group = "awesome" }),
 	akey({ modkey, shiftkey }, "s",
 		function()
-			lockcmd = 'jautolock now lock',
+			lockcmd = c.common.lockscript
 			c.awful.spawn(lockcmd, false)
 		end,
 		{ description = "lock screen", group = "awesome" }),

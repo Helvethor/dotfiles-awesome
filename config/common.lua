@@ -2,8 +2,10 @@ local common = {}
 
 common.homedir = os.getenv("HOME")
 common.confdir = common.homedir .. "/.config/awesome"
+common.screenshotdir = common.homedir .. "/media/pictures/screenshots"
 common.themedir = common.confdir .. "/themes/flexible"
 common.themefile = common.themedir .. "/theme.lua"
+common.lockscript = common.homedir .. "/.config/i3lock-color/downsample.sh"
 
 common.hostname = io.popen("hostname"):read()
 
