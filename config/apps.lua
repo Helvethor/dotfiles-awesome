@@ -9,7 +9,7 @@ function apps.vte(cmd)
 end
 
 apps.terminal = os.getenv("TERMCMD") or "termite"
-apps.editor = apps.vte(os.getenv('EDITOR') or 'vim')
+apps.editor = apps.vte(os.getenv('EDITOR') or 'nvim')
 apps.htop = apps.vte('htop')
 apps.firefox = "firefox"
 apps.browser = "qutebrowser"
@@ -29,7 +29,7 @@ apps.boot = {
 	apps.cloud,
 --	apps.terminal,
 	apps.calendar,
-	apps.locker,
+--	apps.locker,
 	apps.compositor,
 	apps.keyboard
 }

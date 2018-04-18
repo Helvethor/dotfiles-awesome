@@ -253,11 +253,16 @@ bindings.keys.rofi = gtable.join(
 			spawn_rofi("window")
 		end,
         { description = "rofi window", group = "application" }),
+	akey({ modkey, ctrlkey }, spacekey,
+		function()
+			c.awful.spawn("rofi-pass")
+		end,
+        { description = "rofi pass", group = "application" }),
 	akey({ modkey, altkey }, spacekey,
 		function()
-			spawn_rofi("ssh")
+			c.awful.spawn("rofi-pass --insert")
 		end,
-        { description = "rofi ssh", group = "application" })
+        { description = "rofi pass insert", group = "application" })
 )
 -- }}}
 
@@ -488,6 +493,15 @@ bindings.buttons.volume = gtable.join(
 	c.awful.button({ }, 5,
 		function(t)
 			c.screen.widgets.volume.down()
+		end)
+)
+-- }}}
+
+-- {{{ Network
+bindings.buttons.network = gtable.join(
+	c.awful.button({ }, 1,
+		function(t)
+			c.awful.spawn(c.apps.vte("sudo systemctl restart NetworkManager"))
 		end)
 )
 -- }}}
