@@ -4,7 +4,7 @@ local icon = 0x00e00f
 
 local function update(wt, wb)
 	return function ()
-		c.awful.spawn.easy_async_with_shell("echo $(checkupdates | wc -l)/$(pacaur -Qu | wc -l)",
+		c.awful.spawn.easy_async_with_shell("echo $(checkupdates | wc -l)/$(trizen -Su | tail -n 1 | cut -d. -f1)",
 			function (stdout, stderr, reason, exit_code)
 				-- Remove trailing \n
 				stdout = stdout:sub(1, #stdout - 1)

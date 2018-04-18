@@ -19,6 +19,7 @@ local function network()
 	local wt, wm, wbk, wb
 	wt = c.wibox.widget.textbox()
 	wm, wbk, wb = c.widgets.wrap(wt)
+	wm:buttons(c.bindings.buttons.network)
 
 	c.vicious.register(wt, c.vicious.widgets.net, 
 		function (wt, args)
