@@ -160,22 +160,6 @@ bindings.keys.awesome = gtable.join(
 			c.awful.spawn(lockcmd, false)
 		end,
 		{ description = "lock screen", group = "awesome" }),
-	akey({ modkey, shiftkey }, "b",
-		function()
-			if jautolock_busy then
-				key = 'unbusy'
-			else
-				key = 'busy'
-			end
-			jautolock_busy = not jautolock_busy
-
-			c.awful.spawn('jautolock ' .. key, false)
-			c.naughty.notify({
-				title = 'jautolock',
-				text = 'Entering ' .. key .. ' mode'
-			})
-		end,
-		{ description = "(un)busy jautolock", group = "awesome" }),
 	akey({ modkey, shiftkey }, "d",
 		function()
 			command = "cat .config/awesome/dev.lua"
