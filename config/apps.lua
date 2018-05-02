@@ -27,7 +27,7 @@ apps.boot = {
 	apps.mail .. ' & ' .. apps.mail,
 	apps.browser,
 	apps.cloud,
-	apps.terminal,
+--	apps.terminal,
 	apps.calendar,
 --	apps.locker,
 	apps.compositor,
