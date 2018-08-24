@@ -57,6 +57,18 @@ c.awful.rules.rules = {
 			size_hints_honor = true
 		}
 	},
+    {
+        rule_any = {
+            name = {
+                "tk"
+            },
+        },
+        properties = {
+            floating = true,
+            size_hints_honor = true,
+            ontop = true
+        }
+    },
 	{ 
 		rule_any = {
 			class = {
